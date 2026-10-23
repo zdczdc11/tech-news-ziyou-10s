@@ -1,0 +1,18 @@
+name: Validate and render demo
+on: [push, pull_request, workflow_dispatch]
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: sudo apt-get update && sudo apt-get install -y ffmpeg fonts-noto-cjk
+      - run: python -m unittest discover -s tests -v
+      - run: python scripts/demo.py --font "Noto Sans CJK SC"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: demo-video
+          path: output/demo.mp4
+
